@@ -21,6 +21,7 @@ hadoop fs -rmr $output_path
 
 ${SPARK_PATH}/bin/spark-submit \
   --master yarn \
+  --name "spark_demo_xgb" \
   --queue ${YARN_QUEUE} \
   --deploy-mode ${DEPLOY_MODE} \
   --driver-memory 6g \

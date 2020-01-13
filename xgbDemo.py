@@ -50,7 +50,8 @@ def getDict(dictDataLst, colLst):
     return dictData
 
 def main():
-    spark = SparkSession.builder.master("yarn").appName("spark_demo").getOrCreate()
+    #spark = SparkSession.builder.master("yarn").appName("spark_demo").getOrCreate()
+    spark = SparkSession.builder.getOrCreate()
     print "Session created!"
     sc = spark.sparkContext
     print "The url to track the job: http://namenode-01:8088/proxy/" + sc.applicationId
