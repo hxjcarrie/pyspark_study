@@ -1,4 +1,5 @@
 ModelType=lrDemo
+ModelType=lrDemo_df
 #ModelType=xgbDemo
 CUR_PATH=$(cd "$(dirname "$0")";pwd)
 echo $CUR_PATH
