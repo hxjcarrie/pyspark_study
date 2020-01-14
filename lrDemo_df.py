@@ -100,7 +100,7 @@ def main():
     t_cnt = labelsAndPreds_label_1.count()
     f_cnt = labelsAndPreds_label_0.count()
     print "thre\ttp\ttn\tfp\tfn\taccuracy\trecall"
-    for thre in [0.0, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 0.95]:
+    for thre in [0.0, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9]:
         tp = labelsAndPreds_label_1.where(labelsAndPreds_label_1.probability_xj > thre).count()
         tn = t_cnt - tp
         fp = labelsAndPreds_label_0.where(labelsAndPreds_label_0.probability_xj > thre).count()
