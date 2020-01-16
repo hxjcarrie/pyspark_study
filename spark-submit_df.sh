@@ -1,3 +1,5 @@
+modelType=df_sql
+modelType=df
 CUR_PATH=$(cd "$(dirname "$0")";pwd)
 echo $CUR_PATH
 SPARK_PATH=/user/spark/spark
@@ -9,7 +11,7 @@ DEPLOY_MODE=client
 sample_path=hdfs:///user/huangxiaojuan/program/dfDemo/input/sample
 school_path=hdfs:///user/huangxiaojuan/program/dfDemo/input/school
 job_path=hdfs:///user/huangxiaojuan/program/dfDemo/input/job
-output_path=hdfs:///user/huangxiaojuan/program/dfDemo/output
+output_path=hdfs:///user/huangxiaojuan/program/dfDemo/output/${modelType}
 
 hadoop fs -rmr $output_path
 
@@ -33,4 +35,4 @@ ${SPARK_PATH}/bin/spark-submit \
   --conf spark.pyspark.driver.python=./source/py27/bin/python2 \
   --conf spark.yarn.appMasterEnv.PYSPARK_PYTHON=./python_env/py27/bin/python2 \
   --conf spark.pyspark.python=./python_env/py27/bin/python2 \
-  ./df.py $sample_path $school_path $job_path $output_path
+  ./${modelType}.py $sample_path $school_path $job_path $output_path
