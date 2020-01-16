@@ -44,6 +44,7 @@ def main():
     print "\n" + NowDate()
     sampleDataFrame.show(5)
     print NowDate() + '\n'
+    sampleDataFrame.createOrReplaceTempView("sampleTable")
 
     # 读取job表, 从RDD转为dataFrame
     jobRDD = sc.textFile(jobHDFS).map(lambda x: x.split("\t")).filter(lambda x: len(x) > 50).map(lambda x: (x[0], x[2]))
@@ -53,21 +54,30 @@ def main():
     print "\n" + NowDate()
     jobDataFrame.show(5)
     print NowDate() + '\n'
+    jobDataFrame.createOrReplaceTempView("jobTable")
+
     # 读取school表，本身就是parquet格式, 所以直接load完就是dataFrame
     schoolDataFrame = spark.read.option("header", True).load(schoolHDFS).select("id", "user_id", "city_code", "region_code")
     print "\n" + NowDate()
     schoolDataFrame.show(5)
     print NowDate() + '\n'
+    schoolDataFrame.createOrReplaceTempView("schoolTable")
 
     #关联
-    dataFrame = sampleDataFrame\
-          .where(sampleDataFrame.bg == 0)\
-          .join(jobDataFrame, sampleDataFrame.s_JobId == jobDataFrame.JobId, "left")\
-          .join(schoolDataFrame, sampleDataFrame.s_SchoolId == schoolDataFrame.id, "left")\
-          .selectExpr("regionId", "region_code", "city_code", "bg", "UserID", "s_JobId", "s_SchoolId", "action")
+    #dataFrame = sampleDataFrame\
+    #     .where(sampleDataFrame.bg == 0)\
+    #     .join(jobDataFrame, sampleDataFrame.s_JobId == jobDataFrame.JobId, "left")\
+    #     .join(schoolDataFrame, sampleDataFrame.s_SchoolId == schoolDataFrame.id, "left")\
+    #     .selectExpr("regionId", "region_code", "city_code", "bg", "UserID", "s_JobId", "s_SchoolId", "action")
+
+    dataFrame = spark.sql("select regionId, region_code, city_code, bg, UserID, s_JobId, s_SchoolId, action \
+                           from sampleTable \
+                           left join jobTable on sampleTable.s_JobId == jobTable.JobId \
+                           left join schoolTable on sampleTable.s_SchoolId == schoolTable.id \
+                           where sampleTable.bg == 0")
 
     dataFrame.show()
-    dataFrame.write.mode("overwrite").options(header="true").csv(outputHDFS + "/csv")
+    #dataFrame.write.mode("overwrite").options(header="true").csv(outputHDFS + "/csv")
     dataFrame.write.mode("overwrite").options(header="true").save(outputHDFS + "/parquet")
 
 
